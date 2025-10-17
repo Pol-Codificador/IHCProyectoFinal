@@ -1,0 +1,38 @@
+# Entorno virtual
+venv/
+.env/
+ENV/
+
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos temporales y de logs
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.tmp
+
+# Configuración del sistema o del IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archivos de dependencias compiladas
+*.so
+*.dll
+*.dylib
+*.exe
+
+# Archivos de salida (si generas builds o distribuciones)
+build/
+dist/
+*.egg-info/
+
+# Archivos de entorno y secretos
+.env
+*.env

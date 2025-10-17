@@ -36,3 +36,7 @@ dist/
 # Archivos de entorno y secretos
 .env
 *.env
+
+# Archivos del sistema
+*.swp
+*.bak

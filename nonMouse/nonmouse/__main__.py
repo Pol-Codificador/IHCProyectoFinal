@@ -211,6 +211,28 @@ def main():
                     mouse.release(Button.right)
                     h = 1                                       # 右クリック終わった直後状態h=1
                     # print("right click")
+                '''                  
+                # Variable global o fuera del bucle principal
+                pellizco_activado = False
+                # Detectar gesto de pellizco (distancia entre pulgar e índice)
+                distancia_pellizco = calculate_distance(landmark4, landmark8)
+                # Definir un umbral para detectar el pellizco 
+                umbral_pellizco = 0.025
+
+                # Variable de estado (fuera del bucle principal deberías tenerla inicializada como pellizco_activado = False)
+                if distancia_pellizco < umbral_pellizco and not pellizco_activado:
+                    # Realizar un solo clic derecho
+                    mouse.press(Button.right)
+                    mouse.release(Button.right)
+                    pellizco_activado = True  # marcar que ya se hizo el clic
+
+                    draw_circle(image, hand_landmarks.landmark[8].x * image_width,
+                        hand_landmarks.landmark[8].y * image_height, 20, (255, 105, 180))
+                    print("Clic derecho activado por el pellizco")
+
+                    # Si el gesto se suelta (la mano se abre), reiniciar el estado
+                elif distancia_pellizco >= umbral_pellizco:
+                    pellizco_activado = False '''
                 # scroll
                 if hand_landmarks.landmark[8].y-hand_landmarks.landmark[5].y > -0.06:
                     mouse.scroll(0, -dy/50)                     # スクロール感度下げる

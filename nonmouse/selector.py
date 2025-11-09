@@ -1,12 +1,15 @@
-# Contiene la ventana principal de la aplicación
+# Contiene la ventana principal de la aplicación  juegos
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-import os 
+import os
+from.juego4 import mostrar_instrucciones
+from .datosGlobales import set_game_active
+
 # Crear la ventana principal
 def main_selector():
     root = tk.Tk()
-    root.title("Prueba")
+    root.title("SkillPointer")
     root.geometry("600x600")
     root.configure(bg="#2e857d")
 
@@ -14,18 +17,26 @@ def main_selector():
     titulo = tk.Label(root, text="Juegos de Aprendizaje", font=("Arial", 18, "bold"), bg="#2e857d", fg="white")
     titulo.grid(row=0, column=0, columnspan=2, pady=20)
 
-    # Funciones para cada juego
+    # Funciones para cada juego AQUI CADA UNO LLAME A SUS JUEGOS EN NUEVO ARCHIVO JUEGO4 EJEMPLO
     def escribir_letras():
+        set_game_active(1) 
+        root.destroy()
         messagebox.showinfo("Juego", "¡Escribir Letras seleccionado!")
 
     def escribir_numeros():
+        set_game_active(2) 
+        root.destroy()
         messagebox.showinfo("Juego", "¡Escribir Números seleccionado!")
 
     def presionar_colores():
+        set_game_active(3) 
+        root.destroy()
         messagebox.showinfo("Juego", "¡Presionar Colores seleccionado!")
 
     def presionar_animales():
-        messagebox.showinfo("Juego", "¡Presionar Animales seleccionado!")
+        set_game_active(4) 
+        root.destroy()
+        mostrar_instrucciones()
 
     # Función para cargar imágenes desde una ruta local
     def cargar_imagen_desde_ruta(ruta):
@@ -36,13 +47,13 @@ def main_selector():
         except Exception as e:
             print(f"Error al cargar la imagen: {e}")
             return None
-    ruta_base = r"C:\Users\PAUL\OneDrive\Escritorio\LABORATORIOS Y PROYECTOS IV SEMESTRE\PF\IHCProyectoFinal\nonMouse\images"
-    # Rutas locales de las imágenes
-    ruta_letras = os.path.join(ruta_base, "juego1.png")
-    ruta_numeros = os.path.join(ruta_base, "juego2.png")
-    ruta_colores = os.path.join(ruta_base, "juego3.png")
-    ruta_animales = os.path.join(ruta_base, "juego4.png")
 
+    # Construir las rutas relativas con os.path.join()
+    base_dir = os.path.dirname(os.path.abspath(__file__))  # Obtiene el directorio del script
+    ruta_letras = os.path.join(base_dir, "..", "images", "letras_option.png")
+    ruta_numeros = os.path.join(base_dir, "..", "images", "numeros_option.png")
+    ruta_colores = os.path.join(base_dir, "..", "images", "colores_option.png")
+    ruta_animales = os.path.join(base_dir, "..", "images", "animales_option.png")
     # Cargar imágenes
     imagen_letras = cargar_imagen_desde_ruta(ruta_letras)
     imagen_numeros = cargar_imagen_desde_ruta(ruta_numeros)
@@ -69,5 +80,5 @@ def main_selector():
 
     root.mainloop()
 
-# Ejecutar la ventana principal
-main_selector()
+# Ejecutar la ventana 
+#main_selector()

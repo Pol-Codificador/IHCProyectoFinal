@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Define el punto de entrada
 from nonmouse import *
 import os, glob
 from .interfaz import main_interfaz
 from .selector import main_selector
+
 def main():
     main_interfaz()  # Muestra la pantalla de bienvenida
-    main_selector()    # Luego ejecuta la ventana principal
+    #main_selector()    # Luego ejecuta la ventana principal
 
 if __name__ == "__main__":
-     main_interfaz()
+     main_selector()
+
+
 __copyright__    = 'Copyright (C) 2023 Yuki TAKEYAMA'
 __version__      = '2.7.0'
 __license__      = 'Apache-2.0'

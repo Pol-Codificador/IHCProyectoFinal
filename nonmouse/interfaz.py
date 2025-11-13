@@ -1,53 +1,94 @@
-# Contiene la pantalla de bienvenida
 import tkinter as tk
 from tkinter import font
-from tkinter import messagebox
+from PIL import Image, ImageTk
+import os
 from .selector import main_selector
 
-# Función que se ejecutará al hacer clic en el botón "Iniciar todo"
 def iniciar_aplicacion(window):
-    #messagebox.showinfo("SkillPointer", "Iniciando la aplicación...")
     window.destroy()
     main_selector()
+
 def main_interfaz():
     ventana = tk.Tk()
-    ventana.title(" RehabilitacionJugando Featuring multi-movement activities")
-    ventana.geometry("500x300")  # Tamaño de la ventana
-    ventana.config(bg="#2c3e50")  # Color de fondo oscuro para un aspecto modern
-    # Configuración del título en la ventana
-    titulo = tk.Label(
+    ventana.title("RMNMouse")
+    ventana.geometry("900x500")
+    ventana.configure(bg="#0B173B")  # Azul oscuro base por si no carga el fondo
+
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        project_dir = os.path.dirname(base_dir)
+        ruta_imagen = os.path.join(project_dir, "images", "fondo_imagen.png")
+
+        imagen = Image.open(ruta_imagen)
+        altura = 500
+        ancho = int(imagen.width * (altura / imagen.height))
+        imagen_redimensionada = imagen.resize((ancho, altura), Image.ANTIALIAS)
+        fondo = ImageTk.PhotoImage(imagen_redimensionada)
+
+        label_fondo = tk.Label(ventana, image=fondo)
+        label_fondo.place(relwidth=1, relheight=1)
+        label_fondo.image = fondo
+    except Exception as e:
+        print(f"No se pudo cargar la imagen de fondo: {e}")
+
+    # Nuevo esquema de color
+    fondo_frame = "#1E2A47"   # Azul más claro que el fondo general
+    color_borde = "#304674"   # Azul grisáceo para borde
+    color_texto = "#E8F1FF"   # Blanco azulado suave
+    color_boton = "#3B6CF5"   # Azul vivo moderno
+    color_boton_hover = "#2E54C6"
+
+    frame_texto = tk.Frame(
         ventana,
-        text="RehabilitacionJugando",
-        font=("Helvetica", 24, "bold"),
-        fg="#ecf0f1",
-        bg="#2c3e50"
+        bg=fondo_frame,
+        highlightbackground=color_borde,
+        highlightthickness=3,
+        width=400,
+        height=230,
+        padx=30,
+        pady=20
     )
-    titulo.pack(pady=20)  # Espacio alrededor del título
-    # Configuración de la descripción en la ventana
+    frame_texto.place(relx=0.1, rely=0.5, anchor="w")
+
+    try:
+        ruta_imagen_titulo = os.path.join(project_dir, "images", "titulo.png")
+        imagen_titulo = Image.open(ruta_imagen_titulo)
+        imagen_titulo = imagen_titulo.resize((380, 90), Image.ANTIALIAS)
+        imagen_titulo_tk = ImageTk.PhotoImage(imagen_titulo)
+
+        label_titulo = tk.Label(frame_texto, image=imagen_titulo_tk, bg=fondo_frame)
+        label_titulo.image = imagen_titulo_tk
+        label_titulo.pack(pady=(5, 15))
+    except Exception as e:
+        print(f"No se pudo cargar la imagen del título: {e}")
+
     descripcion = tk.Label(
-        ventana,
-        text="Potenciando la motricidad fina y rehabilitacion en quienes lo necesitan",
-        font=("Helvetica", 12),
-        fg="#bdc3c7",
-        bg="#2c3e50",
-        wraplength=400,  # Limita el ancho de la descripción
-        justify="center"
+        frame_texto,
+        text="Ayudando en la rehabilitación motora de los más peques",
+        font=("Segoe UI", 12, "italic"),
+        fg=color_texto,
+        wraplength=360,
+        bg=fondo_frame,
+        justify="left"
     )
-    descripcion.pack(pady=10)
-    # Configuración del botón de inicio
+    descripcion.pack(pady=(0, 20), anchor="w")
+
     boton_iniciar = tk.Button(
-        ventana,
+        frame_texto,
         text="Iniciar",
-        font=("Helvetica", 14, "bold"),
-        fg="#2c3e50",
-        bg="#1abc9c",
-        activebackground="#16a085",  # Color al hacer clic
-        activeforeground="#ecf0f1",
-        relief="flat",  # Quita los bordes para un estilo más moderno
-        cursor="hand2",  # Cambia el cursor al pasar el mouse
-        command=lambda:iniciar_aplicacion(ventana)
+        font=("Segoe UI Semibold", 16),
+        fg="#FFFFFF",
+        bg=color_boton,
+        activebackground=color_boton_hover,
+        activeforeground="#FFFFFF",
+        relief="flat",
+        cursor="hand2",
+        width=12,
+        height=1,
+        command=lambda: iniciar_aplicacion(ventana)
     )
-    boton_iniciar.pack(pady=30)
-# Inicia el bucle principal de la ventana
+    boton_iniciar.pack(pady=10, anchor="w")
+
     ventana.mainloop()
-    
+
+main_interfaz()

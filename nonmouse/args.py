@@ -7,7 +7,7 @@ import tkinter as tk
 def tk_arg():
     root = tk.Tk()
     root.title("First Setup")
-    root.geometry("480x480")
+    root.geometry("370x320")
     screenRes = (root.winfo_screenwidth(),
                  root.winfo_screenheight())  # ディスプレイ解像度取得
     Val1 = tk.IntVar()

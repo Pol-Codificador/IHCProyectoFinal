@@ -9,7 +9,7 @@ from .datosGlobales import set_game_active
 # Crear la ventana principal
 def main_selector():
     root = tk.Tk()
-    root.title("SkillPointer")
+    root.title("RMNMouse")
     root.geometry("600x600")
     root.configure(bg="#2e857d")
 

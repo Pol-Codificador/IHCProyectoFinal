@@ -1,8 +1,7 @@
-# Define el estado del juego activo
-# Define el estado del juego activo
-GAME_ACTIVE = None  # Valor inicial
+# Define el estado del juego activo //variables globales 
+GAME_ACTIVE = None  # Valor inicial ningun juego por default
 
-# Función para obtener el valor de GAME_ACTIVE
+# Función para obtener el valor de GAME_ACTIVE Setters y Getters
 def get_game_active():
     global GAME_ACTIVE
     return GAME_ACTIVE

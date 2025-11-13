@@ -1,10 +1,4 @@
 """No se esta utilizando"""
-import sys
-import os
-
-# Asegura que Python reconozca el paquete nonmouse
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import cv2
 import time
 import keyboard

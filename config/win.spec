@@ -4,14 +4,13 @@ block_cipher = None
 
 a = Analysis(
     ['..\\nonmouse\\__main__.py'],
-    pathex=[r'C:\Users\PAUL\OneDrive\Escritorio\LABORATORIOS Y PROYECTOS IV SEMESTRE\PF\IHCProyectoFinal\nonmouse'],  # Ruta de tu carpeta principal del paquete
+    pathex=[r'C:\Users\PAUL\OneDrive\Escritorio\LABORATORIOS Y PROYECTOS IV SEMESTRE\PF\IHCProyectoFinal'],  # Ajustado a tu entorno actual
     binaries=[],
     datas=[
-        # Incluye los módulos necesarios de mediapipe y cv2 desde tu entorno virtual
-        (r'c:\users\paul\onedrive\escritorio\laboratorios y proyectos iv semestre\pf\ihcproyectofinal\venv\lib\site-packages\mediapipe\modules', 'mediapipe\modules'),
-        (r'c:\users\paul\onedrive\escritorio\laboratorios y proyectos iv semestre\pf\ihcproyectofinal\venv\lib\site-packages\cv2', 'cv2'),
+        (r'C:\Users\PAUL\OneDrive\Escritorio\LABORATORIOS Y PROYECTOS IV SEMESTRE\PF\IHCProyectoFinal\env39\lib\site-packages\mediapipe\modules', r'mediapipe\modules'),
+        (r'C:\Users\PAUL\OneDrive\Escritorio\LABORATORIOS Y PROYECTOS IV SEMESTRE\PF\IHCProyectoFinal\env39\lib\site-packages\cv2\*', 'cv2'),
     ],
-    hiddenimports=['cv2', 'cv2.cv2', 'cv2.data', 'numpy', 'mediapipe'],
+    hiddenimports=['cv2', 'cv2.cv2', 'cv2.data', 'numpy'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -23,6 +22,8 @@ a = Analysis(
 )
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+hiddenimports = ['mediapipe']
 
 exe = EXE(
     pyz,
@@ -38,10 +39,10 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,  # False = sin consola, True = con consola visible
+    console=True,
     disable_windowed_traceback=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='..\\images\\icon.ico'  # Ícono del ejecutable
+    icon='..\\images\\icon.ico'
 )

@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
+from.juego1 import mostrar_instrucciones_juego1
 from.juego4 import mostrar_instrucciones
 from .datosGlobales import set_game_active
 
@@ -19,9 +20,9 @@ def main_selector():
 
     # Funciones para cada juego AQUI CADA UNO LLAME A SUS JUEGOS EN NUEVO ARCHIVO JUEGO4 EJEMPLO
     def escribir_letras():
-        set_game_active(1) 
+        set_game_active(1)
         root.destroy()
-        messagebox.showinfo("Juego", "¡Escribir Letras seleccionado!")
+        mostrar_instrucciones_juego1()
 
     def escribir_numeros():
         set_game_active(2) 

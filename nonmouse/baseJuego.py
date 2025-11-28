@@ -89,7 +89,7 @@ class GameWindow:
         self.start = float('inf')
         self.c_start = float('inf')
         self.dis = 0.7
-        self.kando = 9.0  # Sensibilidad del mouse
+        self.kando = 11.0  # Sensibilidad del mouse
         self.ran = 6  # Suavizado
 
     def process_hand_tracking(self, image, results):
@@ -141,7 +141,7 @@ class GameWindow:
 #AQUI ESTA LA LOGICA SEGUN EL TIPO DE JUEGO ESCOGIDO FLAGS
         #JUEGO 4 PELIZCA EL ANIMAL
         # Detectar gesto de pellizco
-        if get_game_active() == 4:
+        if hasattr(self.game_frame, "detectar_pellizco"):
             distancia_pellizco = calculate_distance(landmark4, landmark8)
             if distancia_pellizco < 0.05:
                 self.mouse.press(Button.right)

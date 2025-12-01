@@ -31,14 +31,14 @@ def detener_musica():
 # --------------- INSTRUCCIONES ----------------
 def mostrar_instrucciones2():
     root = tk.Tk()
-    root.title("Instrucciones - Pellizca el insecto")
+    root.title("Instrucciones - Pellizca los numeros")
     root.geometry("370x450")
 
     tk.Label(root, text='INSTRUCCIONES', font=("Arial", 14, "bold")).pack(pady=10)
     tk.Label(
         root,
-        text='Pellizca los insectos con los dedos índice y pulgar para eliminarlos.\n'
-             'Cada insecto eliminado suma puntos.',
+        text='Pellizca los numeros que llegaran de derecha a izquierda \n'
+             'Cada numero eliminado suma puntos.',
         wraplength=300
     ).pack(pady=20)
 
@@ -48,7 +48,7 @@ def mostrar_instrucciones2():
 
         iniciar_musica_juego2()
 
-        game_window = GameWindow("Juego 2: Pellizca el Insecto")
+        game_window = GameWindow("Juego 2: Pellizca los numeros")
         game_window.setGameFrame(logicaJuego2)
         game_window.run()
 
@@ -69,6 +69,14 @@ def logicaJuego2(game_frame):
         label_fondo.lower()
         game_frame.image = fondo
 
+    # ======================= ESTILOS ===========================
+    COLOR_TEXT = "#2c3e50"
+    COLOR_CARD = "#ffffff"
+    COLOR_ACCENT = "#0984e3"
+    COLOR_ACCENT_LIGHT = "#74b9ff"
+    COLOR_DANGER = "#d63031"
+    COLOR_DANGER_LIGHT = "#ff7675"
+
     # ---------------- BOTÓN REGRESAR ----------------
     def regresar_menu():
         from .selector import main_selector
@@ -79,39 +87,65 @@ def logicaJuego2(game_frame):
 
     tk.Button(
         game_frame,
-        text="Regresar al menú",
-        font=("Arial", 12, "bold"),
-        bg="#ff4d4d",
+        text="⟵ Volver",
+        font=("Segoe UI", 13, "bold"),
+        bg=COLOR_DANGER,
         fg="white",
+        activebackground=COLOR_DANGER_LIGHT,
+        activeforeground="white",
         relief="flat",
+        bd=0,
         cursor="hand2",
-        command=regresar_menu
+        padx=18,
+        pady=10,
+        highlightthickness=0
     ).place(x=20, y=70)
 
-    # ---------------- ESTADÍSTICAS ----------------
+    # ---------------- ESTADÍSTICAS (rediseñadas) ----------------
     puntaje = tk.IntVar(value=0)
     vidas = tk.IntVar(value=5)
 
-    label_puntaje = tk.Label(game_frame, text="Puntaje: 0", font=("Arial", 14), bg="#ffffff")
-    label_puntaje.place(x=20, y=20)
+    # Contenedor bonito para estadísticas
+    stats_frame = tk.Frame(
+        game_frame,
+        bg=COLOR_CARD,
+        highlightbackground="#dfe6e9",
+        highlightthickness=2,
+        bd=0
+    )
+    stats_frame.place(x=20, y=20, width=260, height=50)
 
-    label_vidas = tk.Label(game_frame, text="Vidas: 5", font=("Arial", 14), bg="#ffffff")
-    label_vidas.place(x=150, y=20)
+    label_puntaje = tk.Label(
+        stats_frame,
+        text="Puntaje: 0",
+        font=("Segoe UI", 14, "bold"),
+        bg=COLOR_CARD,
+        fg=COLOR_TEXT,
+        padx=10
+    )
+    label_puntaje.place(x=10, y=10)
+
+    label_vidas = tk.Label(
+        stats_frame,
+        text="Vidas: 5",
+        font=("Segoe UI", 14, "bold"),
+        bg=COLOR_CARD,
+        fg=COLOR_TEXT,
+        padx=10
+    )
+    label_vidas.place(x=135, y=10)
 
     # ---------------- LISTA DE NÚMEROS ----------------
     numeros = []
 
-    # ---------------- CARGAR IMÁGENES DE NÚMEROS ----------------
+    # ---------------- CARGAR IMÁGENES ----------------
     number_images = {}
     for i in range(10):
         ruta = os.path.join(base_dir, "..", "images", "juego2", f"{i}.png")
         try:
-            img_pil = Image.open(ruta)
-            img_pil = img_pil.resize((80, 80), Image.ANTIALIAS)
-            img = ImageTk.PhotoImage(img_pil)
-            number_images[i] = img
-        except Exception as e:
-            print(f"Error cargando {ruta}: {e}")
+            img_pil = Image.open(ruta).resize((90, 90), Image.LANCZOS)
+            number_images[i] = ImageTk.PhotoImage(img_pil)
+        except:
             number_images[i] = None
 
     # ---------------- CREAR NÚMERO ----------------
@@ -121,24 +155,23 @@ def logicaJuego2(game_frame):
 
         valor = random.randint(0, 9)
         img = number_images[valor]
-
         if img is None:
-            return  # si no cargó, saltar
+            return
 
-        x = 900 
-
+        x = 900
         y = random.randint(150, 600)
 
-        label = tk.Label(game_frame, image=img, bg="#ffffff")
+        label = tk.Label(
+            game_frame,
+            image=img,
+            bg="#ffffff",
+            highlightthickness=0,
+            bd=0
+        )
         label.image = img
         label.place(x=x, y=y)
 
-        numeros.append({
-            "widget": label,
-            "x": x,
-            "y": y,
-            "valor": valor
-        })
+        numeros.append({"widget": label, "x": x, "y": y, "valor": valor})
 
         game_frame.after(700, crear_numero)
 
@@ -166,13 +199,13 @@ def logicaJuego2(game_frame):
 
         game_frame.after(40, mover_numeros)
 
-    # ---------------- DETECTAR PELLIZCO / CLICK ----------------
+    # ---------------- DETECCIÓN DE CLICK ----------------
     def detectar_pellizco(event=None):
         mouse_x = game_frame.winfo_pointerx() - game_frame.winfo_rootx()
         mouse_y = game_frame.winfo_pointery() - game_frame.winfo_rooty()
 
         for num in numeros[:]:
-            if abs(mouse_x - num["x"]) < 40 and abs(mouse_y - num["y"]) < 40:
+            if abs(mouse_x - num["x"]) < 45 and abs(mouse_y - num["y"]) < 45:
                 num["widget"].destroy()
                 numeros.remove(num)
 

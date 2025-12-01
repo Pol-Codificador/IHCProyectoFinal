@@ -70,31 +70,62 @@ def logicaJuego4(game_frame):
         label_fondo.place(relwidth=1, relheight=1)
         game_frame.image = fondo
 
+    # ======================= ESTILOS ===========================
+    COLOR_TEXT = "#2c3e50"
+    COLOR_CARD = "#ffffff"
+    COLOR_ACCENT = "#0984e3"
+    COLOR_ACCENT_LIGHT = "#74b9ff"
+    COLOR_DANGER = "#d63031"
+    COLOR_DANGER_LIGHT = "#ff7675"
+
     # ---------------- BOTÓN REGRESAR ----------------
     def regresar_menu():
-        from .selector import main_selector  # IMPORT LOCAL = NO CIRCULAR
+        from .selector import main_selector
         detener_musica()
         ventana = game_frame.winfo_toplevel()
         ventana.destroy()
         main_selector()
 
-    boton_regresar = tk.Button(
+    tk.Button(
         game_frame,
-        text="Regresar al menú",
-        font=("Arial", 12, "bold"),
-        bg="#ff4d4d",
+        text="⟵ Volver",
+        font=("Segoe UI", 13, "bold"),
+        bg=COLOR_DANGER,
         fg="white",
+        activebackground=COLOR_DANGER_LIGHT,
+        activeforeground="white",
         relief="flat",
+        bd=0,
         cursor="hand2",
+        padx=18,
+        pady=10,
+        highlightthickness=0,
         command=regresar_menu
-    )
-    boton_regresar.place(x=20, y=70)
+    ).place(x=20, y=70)
 
-    # ---------------- PUNTAJE ----------------
+    # ---------------- PUNTAJE (en card) ----------------
     puntaje = tk.IntVar(value=0)
-    label_puntaje = tk.Label(game_frame, text="Puntaje: 0", font=("Arial", 14), bg="#ffffff")
-    label_puntaje.place(x=20, y=20)
 
+    stats_frame = tk.Frame(
+        game_frame,
+        bg=COLOR_CARD,
+        highlightbackground="#dfe6e9",
+        highlightthickness=2,
+        bd=0
+    )
+    stats_frame.place(x=20, y=20, width=180, height=50)
+
+    label_puntaje = tk.Label(
+        stats_frame,
+        text="Puntaje: 0",
+        font=("Segoe UI", 14, "bold"),
+        bg=COLOR_CARD,
+        fg=COLOR_TEXT,
+        padx=10
+    )
+    label_puntaje.place(x=10, y=10)
+
+    # ---------------- LISTA DE INSECTOS ----------------
     insectos = []
 
     # ---------------- CREAR INSECTO ----------------
@@ -102,18 +133,25 @@ def logicaJuego4(game_frame):
         if get_game_active() != 4:
             return
 
-        insecto_img = cargar_imagen(ruta_insecto, altura=100)
+        insecto_img = cargar_imagen(ruta_insecto, altura=110)
 
         if insecto_img:
             x = random.randint(100, 900)
             y = random.randint(150, 600)
-            insecto = tk.Label(game_frame, image=insecto_img, borderwidth=0, highlightthickness=0, bg="#ffffff")
+
+            insecto = tk.Label(
+                game_frame,
+                image=insecto_img,
+                borderwidth=0,
+                highlightthickness=0,
+                bg="#ffffff"
+            )
             insecto.image = insecto_img
             insecto.place(x=x, y=y)
 
             insectos.append((insecto, x, y))
 
-            # --> El insecto desaparece tras 2 segundos
+            # Desaparece tras 2 segundos
             def desaparecer():
                 if (insecto, x, y) in insectos:
                     insecto.destroy()

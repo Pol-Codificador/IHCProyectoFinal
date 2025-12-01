@@ -98,14 +98,14 @@ def logicaJuego2(game_frame):
         cursor="hand2",
         padx=18,
         pady=10,
-        highlightthickness=0
+        highlightthickness=0,
+        command=regresar_menu
     ).place(x=20, y=70)
 
-    # ---------------- ESTADÍSTICAS (rediseñadas) ----------------
+    # ---------------- ESTADÍSTICAS ----------------
     puntaje = tk.IntVar(value=0)
     vidas = tk.IntVar(value=5)
 
-    # Contenedor bonito para estadísticas
     stats_frame = tk.Frame(
         game_frame,
         bg=COLOR_CARD,
@@ -138,12 +138,28 @@ def logicaJuego2(game_frame):
     # ---------------- LISTA DE NÚMEROS ----------------
     numeros = []
 
-    # ---------------- CARGAR IMÁGENES ----------------
+    # ---------------- CARGAR IMÁGENES (MEJORADO) ----------------
+    from PIL import Image, ImageTk
+
     number_images = {}
     for i in range(10):
         ruta = os.path.join(base_dir, "..", "images", "juego2", f"{i}.png")
         try:
-            img_pil = Image.open(ruta).resize((90, 90), Image.LANCZOS)
+            img_pil = Image.open(ruta).convert("RGBA")
+
+            # ======== LIMPIEZA AUTOMÁTICA DEL FONDO CUADRICULADO ========
+            datas = img_pil.getdata()
+            new_data = []
+            for pixel in datas:
+                r, g, b, a = pixel
+                if r > 220 and g > 220 and b > 220:
+                    new_data.append((255, 255, 255, 0))
+                else:
+                    new_data.append(pixel)
+            img_pil.putdata(new_data)
+            # =============================================================
+
+            img_pil = img_pil.resize((90, 90), Image.LANCZOS)
             number_images[i] = ImageTk.PhotoImage(img_pil)
         except:
             number_images[i] = None
@@ -217,4 +233,5 @@ def logicaJuego2(game_frame):
     # ---------------- INICIAR JUEGO ----------------
     game_frame.after(500, crear_numero)
     mover_numeros()
+
 

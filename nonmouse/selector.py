@@ -5,6 +5,8 @@ from PIL import Image, ImageTk
 import os
 from.juego1 import mostrar_instrucciones_juego1
 from.juego4 import mostrar_instrucciones
+from.juego3 import mostrar_instrucciones3
+from.juego2 import mostrar_instrucciones2
 from .datosGlobales import set_game_active
 
 # Crear la ventana principal
@@ -27,13 +29,13 @@ def main_selector():
     def escribir_numeros():
         set_game_active(2) 
         root.destroy()
-        messagebox.showinfo("Juego", "¡Escribir Números seleccionado!")
-
+        mostrar_instrucciones2()
+        
     def presionar_colores():
         set_game_active(3) 
         root.destroy()
-        messagebox.showinfo("Juego", "¡Presionar Colores seleccionado!")
-
+        mostrar_instrucciones3()
+        
     def presionar_animales():
         set_game_active(4) 
         root.destroy()

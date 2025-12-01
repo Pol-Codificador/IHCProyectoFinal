@@ -19,14 +19,12 @@ class GameWindow:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(expand=True, fill='both')
 
-        # Frame para el juego (lado izquierdo) Se tiene que reemplazar con cada juego en especifico
+        # Frame para el juego (lado izquierdo)
         self.game_frame = tk.Frame(self.main_frame, width=200, height=700)
         self.game_frame.pack(side='left', expand=True, fill='both')
 
-    
-        
         # Frame para la cámara (lado derecho)
-        self.camera_frame = tk.Frame(self.main_frame, width=20, height=15)  #En la parte de arriba se posicionara la camara aunque la parte de abajo queda libre
+        self.camera_frame = tk.Frame(self.main_frame, width=20, height=15)
         self.camera_frame.pack(side='right', anchor='ne', padx=20, pady=20)
 
         # Label para mostrar el feed de la cámara
@@ -40,16 +38,15 @@ class GameWindow:
         
         # Iniciar la actualización de la cámara
         self.update_camera()
-    # Set frame de juego 
-    def setGameFrame(self,game_logic):
-        # Limpia el frame actual
+
+    # Set frame del juego
+    def setGameFrame(self, game_logic):
         for widget in self.game_frame.winfo_children():
             widget.destroy()
         game_logic(self.game_frame)
-    # Set frame de descripcion puntaje titulo etc (debajo de la camara) informacion del juego quizas?  
+
     def setCameraFrame(self,game_description):
         print("Falta ajustar")
-
 
     def setup_camera(self):
         self.cap_width = 210
@@ -65,12 +62,12 @@ class GameWindow:
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(
-            min_detection_confidence=0.8,# Confianza en la detección
-            min_tracking_confidence=0.8,# Confianza en el seguimiento
-            max_num_hands=1  # Número máximo de manos detectadas
+            min_detection_confidence=0.8,
+            min_tracking_confidence=0.8,
+            max_num_hands=1
         )
 
-    def setup_mouse_control(self): #Valores predeterminados
+    def setup_mouse_control(self):
         self.mouse = Controller()
         self.preX, self.preY = 0, 0
         self.nowCli, self.preCli = 0, 0
@@ -89,8 +86,8 @@ class GameWindow:
         self.start = float('inf')
         self.c_start = float('inf')
         self.dis = 0.7
-        self.kando = 11.0  # Sensibilidad del mouse
-        self.ran = 6  # Suavizado
+        self.kando = 11.0
+        self.ran = 6
 
     def process_hand_tracking(self, image, results):
         if results.multi_hand_landmarks:
@@ -103,57 +100,76 @@ class GameWindow:
                     self.preY = hand_landmarks.landmark[8].y
                     self.i += 1
 
-                # Procesar landmarks y movimiento del mouse
                 self.process_landmarks(hand_landmarks, image)
 
         return image
 
     def process_landmarks(self, hand_landmarks, image):
-        # Calcular promedios móviles para los landmarks
-        landmark0 = [calculate_moving_average(hand_landmarks.landmark[0].x, self.ran, self.list0x),
-                    calculate_moving_average(hand_landmarks.landmark[0].y, self.ran, self.list0y)]
-        landmark1 = [calculate_moving_average(hand_landmarks.landmark[1].x, self.ran, self.list1x),
-                    calculate_moving_average(hand_landmarks.landmark[1].y, self.ran, self.list1y)]
-        landmark4 = [calculate_moving_average(hand_landmarks.landmark[4].x, self.ran, self.list4x),
-                    calculate_moving_average(hand_landmarks.landmark[4].y, self.ran, self.list4y)]
-        landmark8 = [calculate_moving_average(hand_landmarks.landmark[8].x, self.ran, self.list8x),
-                    calculate_moving_average(hand_landmarks.landmark[8].y, self.ran, self.list8y)]
+        # Calcular promedios móviles
+        landmark4 = [
+            calculate_moving_average(hand_landmarks.landmark[4].x, self.ran, self.list4x),
+            calculate_moving_average(hand_landmarks.landmark[4].y, self.ran, self.list4y)
+        ]
+        landmark8 = [
+            calculate_moving_average(hand_landmarks.landmark[8].x, self.ran, self.list8x),
+            calculate_moving_average(hand_landmarks.landmark[8].y, self.ran, self.list8y)
+        ]
 
-        # Calcular movimiento del mouse
         nowX = calculate_moving_average(hand_landmarks.landmark[8].x, self.ran, self.LiTx)
         nowY = calculate_moving_average(hand_landmarks.landmark[8].y, self.ran, self.LiTy)
-        
+
         dx = self.kando * (nowX - self.preX) * self.cap_width
         dy = self.kando * (nowY - self.preY) * self.cap_height
-        
+
         self.preX = nowX
         self.preY = nowY
 
-        # Mover el mouse
+        # Mover mouse
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         current_x, current_y = self.mouse.position
 
         new_x = max(0, min(screen_width, current_x + dx))
         new_y = max(0, min(screen_height, current_y + dy))
-        
         self.mouse.position = (new_x, new_y)
-#AQUI ESTA LA LOGICA SEGUN EL TIPO DE JUEGO ESCOGIDO FLAGS
-        #JUEGO 4 PELIZCA EL ANIMAL
-        # Detectar gesto de pellizco
+
+        # -------------------------------
+        #   LÓGICA DE JUEGOS INTEGRADA
+        # -------------------------------
+
+        # --- JUEGO 1 / JUEGO 2 ---
+        if hasattr(self.game_frame, "recibir_punto"):
+            distancia = calculate_distance(landmark4, landmark8)
+
+            # Iniciar trazo
+            if distancia > 0.12 and hasattr(self.game_frame, "iniciar_trazo"):
+                self.game_frame.iniciar_trazo()
+
+            # Enviar punto
+            x_norm = hand_landmarks.landmark[8].x
+            y_norm = hand_landmarks.landmark[8].y
+            self.game_frame.recibir_punto(x_norm, y_norm)
+
+            # Cerrar trazo
+            if distancia < 0.05 and hasattr(self.game_frame, "cerrar_trazo"):
+                self.game_frame.cerrar_trazo()
+
+        # --- JUEGO 4: pellizcar animal ---
         if hasattr(self.game_frame, "detectar_pellizco"):
             distancia_pellizco = calculate_distance(landmark4, landmark8)
             if distancia_pellizco < 0.05:
                 self.mouse.press(Button.right)
                 self.mouse.release(Button.right)
-                draw_circle(image, 
-                          hand_landmarks.landmark[8].x * image.shape[1],  # Use image width
-                          hand_landmarks.landmark[8].y * image.shape[0],  # Use image height 
-                          20, (255, 105, 180))
-                #Agregamos esta parte
-                if hasattr(self.game_frame, "detectar_pellizco"):
-                    self.game_frame.detectar_pellizco()
-            #Dibujar el juego en el frame donde va el juego
+
+                draw_circle(
+                    image,
+                    hand_landmarks.landmark[8].x * image.shape[1],
+                    hand_landmarks.landmark[8].y * image.shape[0],
+                    20,
+                    (255, 105, 180)
+                )
+
+                self.game_frame.detectar_pellizco()
 
     def update_camera(self):
         success, image = self.cap.read()
@@ -161,15 +177,13 @@ class GameWindow:
             image = cv2.flip(image, 1)
             image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             results = self.hands.process(image_rgb)
-            
-            # Procesar el tracking de manos
+
             image = self.process_hand_tracking(image, results)
-            
-            # Convertir la imagen para mostrarla en Tkinter
+
             image = cv2.resize(image, (self.cap_width, self.cap_height))
             image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
             image = ImageTk.PhotoImage(image=image)
-            
+
             self.camera_label.configure(image=image)
             self.camera_label.image = image
             
